@@ -38,7 +38,7 @@ const AboutUs4 = () => {
     };
   }, []);
 
-  // Hide scroll hint after 5 seconds
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowScrollHint(false);
@@ -47,23 +47,19 @@ const AboutUs4 = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Add wheel event listener to handle vertical scroll
   useEffect(() => {
-    // Function to handle wheel events on the slider
+ 
     const handleWheel = (e) => {
       if (!sliderRef.current || isScrollingRef.current) return;
       
-      // Always prevent default to take full control of scrolling
       e.preventDefault();
       
       const delta = e.deltaY;
       const currentScroll = sliderRef.current.scrollLeft;
       const maxScroll = sliderRef.current.scrollWidth - sliderRef.current.clientWidth;
       
-      // If we've reached the end of horizontal scrolling and user is trying to scroll down further
       if (currentScroll >= maxScroll - 10 && delta > 0 && scrollEndReached) {
         setScrollEndReached(false);
-        // Move to next section by scrolling the window
         const nextSection = sectionRef.current.nextElementSibling;
         if (nextSection) {
           nextSection.scrollIntoView({ behavior: 'smooth' });
@@ -71,38 +67,31 @@ const AboutUs4 = () => {
         return;
       }
       
-      // Handle horizontal scrolling from vertical wheel
       isScrollingRef.current = true;
       
-      // Only scroll horizontally, ignore any vertical component
       sliderRef.current.scrollBy({
         left: delta,
         top: 0,
         behavior: 'smooth'
       });
       
-      // Reset scrolling flag after animation completes
       setTimeout(() => {
         isScrollingRef.current = false;
       }, 200);
     };
     
-    // Function to prevent parent scrolling when interacting with the slider
     const preventParentScroll = (e) => {
-      // If we're not at the end, prevent scrolling the page
       if (!scrollEndReached) {
         e.preventDefault();
       }
     };
     
-    // Add event listeners
     if (sliderRef.current) {
       sliderRef.current.addEventListener('wheel', handleWheel, { passive: false });
       sliderRef.current.addEventListener('touchmove', preventParentScroll, { passive: false });
     }
     
     if (sectionRef.current) {
-      // Prevent the section from scrolling when we're handling horizontal scrolling
       sectionRef.current.addEventListener('wheel', (e) => {
         if (e.target.closest('.slider-container') && !scrollEndReached) {
           e.preventDefault();
@@ -110,7 +99,6 @@ const AboutUs4 = () => {
       }, { passive: false });
     }
     
-    // Remove event listeners on cleanup
     return () => {
       if (sliderRef.current) {
         sliderRef.current.removeEventListener('wheel', handleWheel);
@@ -123,7 +111,6 @@ const AboutUs4 = () => {
     };
   }, [scrollEndReached]);
 
-  // Update progress bar directly using DOM to avoid multiple renders
   useEffect(() => {
     if (progressBarRef.current) {
       progressBarRef.current.style.width = `${scrollProgress}%`;
@@ -198,7 +185,6 @@ const AboutUs4 = () => {
         setCurrentSlide(newIndex);
       }
       
-      // Hide hint once user has started scrolling
       if (scrollPosition > 10) {
         setShowScrollHint(false);
       }
